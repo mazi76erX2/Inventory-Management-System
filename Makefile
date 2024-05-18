@@ -55,8 +55,14 @@ drop-local-database-mac:
 run-local:
 	$(PYTHON) -m uvicorn --chdir $(APP_DIR) main:app --reload
 
+makemigrations:
+	$(PYTHON) -m alembic $(APP_DIR) revision --autogenerate
+
 migrate:
 	$(PYTHON) -m alembic $(APP_DIR) upgrade head
+
+create-mock-data:
+	$(PYTHON) management/create_mock_data.py
 
 test:
 	$(PYTHON) -m pytest $(TEST_SRC)
@@ -71,9 +77,17 @@ down:
 logs:
 	docker compose logs -f
 
-test-docker:
+docker-makemigrations:
+	docker compose exec backend python -m alembic $(APP_DIR) revision --autogenerate -m
+
+docker-migrate:
+	docker compose exec backend python -m alembic $(APP_DIR) upgrade head
+
+docker-test:
 	docker compose exec backend python -m pytest $(TEST_SRC)
 
+create-mock-data:
+	docker compose exec backend python management/create_mock_data.py
 
 ### Docker production commands ###
 prod-migrate:
