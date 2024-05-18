@@ -4,8 +4,10 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.api import api_router
-from backend.config import configure_logging, DEBUG, ALLOWED_HOSTS
+from api import api_router
+from database import engine
+from models import Base
+from config import configure_logging, DEBUG, ALLOWED_HOSTS
 
 configure_logging()
 
@@ -25,6 +27,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+async def startup():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await engine.dispose()
+
 
 app.include_router(api_router)
 

@@ -1,5 +1,6 @@
 services:
-  app:
+  backend:
+    restart: always
     build: .
     command: bash -c "alembic upgrade head &&
       uvicorn main:app
@@ -18,10 +19,17 @@ services:
       - ./.env
   db:
     image: postgres:16-bullseye
+    restart: always
     environment:
       - POSTGRES_USER=${DATABASE_USERNAME}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
       - POSTGRES_DB=${DATABASE_NAME}
+    ports:
+      - 5432:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - backend
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
@@ -32,6 +40,14 @@ services:
       - "5050:80"
     depends_on:
       - db
+  redis:
+    restart: unless-stopped
+    image: redis:7.2.4-alpine
+    expose:
+      - 6379
+    networks:
+      - backend
+
 volumes:
   db: {}
 

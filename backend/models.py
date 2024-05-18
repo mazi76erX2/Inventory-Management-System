@@ -1,12 +1,10 @@
 """Module for defining the database models."""
 
-from datetime import datetime
-
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, func
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 
-Base = declarative_base()
+Base: DeclarativeMeta = declarative_base()
 
 
 class TimestampMixin:
@@ -30,8 +28,8 @@ class Item(Base, TimestampMixin):
     category_id = Column(Integer, ForeignKey("categories.id"))
     supplier_id = Column(Integer, ForeignKey("suppliers.id"))
 
-    category = relationship("Category", backref="items")
-    supplier = relationship("Supplier", backref="items")
+    category = relationship("Category", backref="items", lazy="joined")
+    supplier = relationship("Supplier", backref="items", lazy="joined")
 
 
 class Category(Base, TimestampMixin):

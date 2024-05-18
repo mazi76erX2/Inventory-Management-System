@@ -4,9 +4,9 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from backend.database import get_session
-from backend.models import Category
-from backend.schemas import CategoryCreate, CategoryResponse
+from database import get_session
+from models import Category
+from schemas import CategoryCreate, CategoryResponse
 
 router = APIRouter()
 

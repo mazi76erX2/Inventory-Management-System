@@ -5,10 +5,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.sql import func
 
-from backend.database import get_session
-from backend.models import Item, Category
-from backend.schemas import InventoryStatisticsResponse, LowInventoryItemResponse
-from backend.cache import redis_cache
+from database import get_session
+from models import Item, Category
+from schemas import InventoryStatisticsResponse, LowInventoryItemResponse
+from cache import redis_cache
 
 router = APIRouter()
 

@@ -13,7 +13,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql+psycopg://postgres:postgres@db/inventory-management-system",
+    "postgresql+asyncpg://postgres:postgres@db/inventory-management-system",
 )
 
 LOGGING_FORMAT = "%(levelname)s: %(name)s: %(message)s"

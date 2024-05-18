@@ -7,7 +7,7 @@ from typing import Optional
 
 import redis
 
-from .config import REDIS_URL
+from config import REDIS_URL
 
 
 class RedisCache:
