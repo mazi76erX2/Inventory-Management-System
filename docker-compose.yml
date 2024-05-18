@@ -1,7 +1,10 @@
 services:
   app:
     build: .
-    command: bash -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0
+    command: bash -c "alembic upgrade head &&
+      uvicorn main:app
+      --host 0.0.0.0
+      --app-dir backend
       --port 8000 --reload"
     ports:
       - "8000:8000"
