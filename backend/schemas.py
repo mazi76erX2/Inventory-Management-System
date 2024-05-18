@@ -1,5 +1,7 @@
-from pydantic import BaseModel, Field, Optional
+from typing import Optional
 from datetime import datetime
+
+from pydantic import BaseModel, Field
 
 
 class ItemBase(BaseModel):
@@ -9,11 +11,14 @@ class ItemBase(BaseModel):
     category_id: int = Field(..., description="The ID of the associated category")
     supplier_id: int = Field(..., description="The ID of the associated supplier")
 
+
 class ItemCreate(ItemBase):
     pass
 
+
 class ItemUpdate(ItemBase):
     id: int
+
 
 class ItemResponse(ItemBase):
     id: int
@@ -21,14 +26,16 @@ class ItemResponse(ItemBase):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CategoryBase(BaseModel):
     name: str = Field(..., description="The category name")
 
+
 class CategoryCreate(CategoryBase):
     pass
+
 
 class CategoryResponse(CategoryBase):
     id: int
@@ -36,7 +43,7 @@ class CategoryResponse(CategoryBase):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class SupplierBase(BaseModel):
@@ -45,8 +52,10 @@ class SupplierBase(BaseModel):
         None, description="The supplier's contact information (optional)"
     )
 
+
 class SupplierCreate(SupplierBase):
     pass
+
 
 class SupplierResponse(SupplierBase):
     id: int
@@ -54,7 +63,8 @@ class SupplierResponse(SupplierBase):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 class LowInventoryItemBase(BaseModel):
     id: int = Field(..., description="The item name")
@@ -65,17 +75,20 @@ class LowInventoryItemBase(BaseModel):
     supplier_id: int = Field(..., description="The ID of the associated supplier")
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 class LowInventoryItemResponse(LowInventoryItemBase):
     pass
+
 
 class InventoryStatisticsBase(BaseModel):
     category_name: str = Field(..., description="The category name")
     total_stock: int = Field(..., description="The total stock level for the category")
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 class InventoryStatisticsResponse(InventoryStatisticsBase):
     pass

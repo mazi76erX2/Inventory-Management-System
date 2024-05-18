@@ -2,9 +2,9 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from .main import get_session
-from .models import Item
-from .schemas import ItemCreate, ItemUpdate, ItemResponse
+from backend.database import get_session
+from backend.models import Item
+from backend.schemas import ItemCreate, ItemUpdate, ItemResponse
 
 router = APIRouter()
 
@@ -17,11 +17,15 @@ async def create_item(item: ItemCreate, session: AsyncSession = Depends(get_sess
     await session.refresh(db_item)
     return db_item
 
+
 @router.get("/", response_model=list[ItemResponse])
-async def read_items(skip: int = 0, limit: int = 10, session: AsyncSession = Depends(get_session)):
+async def read_items(
+    skip: int = 0, limit: int = 10, session: AsyncSession = Depends(get_session)
+):
     result = await session.execute(select(Item).offset(skip).limit(limit))
     items = result.scalars().all()
     return items
+
 
 @router.get("/{item_id}", response_model=ItemResponse)
 async def read_item(item_id: int, session: AsyncSession = Depends(get_session)):
@@ -30,8 +34,11 @@ async def read_item(item_id: int, session: AsyncSession = Depends(get_session)):
         raise HTTPException(status_code=404, detail="Item not found")
     return db_item
 
+
 @router.put("/{item_id}", response_model=ItemResponse)
-async def update_item(item_id: int, item: ItemUpdate, session: AsyncSession = Depends(get_session)):
+async def update_item(
+    item_id: int, item: ItemUpdate, session: AsyncSession = Depends(get_session)
+):
     db_item = await session.get(Item, item_id)
     if not db_item:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -40,6 +47,7 @@ async def update_item(item_id: int, item: ItemUpdate, session: AsyncSession = De
     await session.commit()
     await session.refresh(db_item)
     return db_item
+
 
 @router.delete("/{item_id}")
 async def delete_item(item_id: int, session: AsyncSession = Depends(get_session)):

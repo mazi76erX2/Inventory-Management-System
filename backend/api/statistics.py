@@ -1,12 +1,14 @@
+import json
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.sql import func
 
-from .main import get_session
-from .models import Item, Category
-from .schemas import InventoryStatistics, LowInventoryItem
-from .cache import redis_cache
+from backend.database import get_session
+from backend.models import Item, Category
+from backend.schemas import InventoryStatisticsResponse, LowInventoryItemResponse
+from backend.cache import redis_cache
 
 router = APIRouter()
 
@@ -22,8 +24,11 @@ async def get_total_stock_value(session: AsyncSession = Depends(get_session)):
     await redis_cache.set("total_stock_value", str(total_stock_value))
     return total_stock_value
 
-@router.get("/low_inventory", response_model=list[LowInventoryItem])
-async def get_low_inventory_items(threshold: int = 10, session: AsyncSession = Depends(get_session)):
+
+@router.get("/low_inventory", response_model=list[LowInventoryItemResponse])
+async def get_low_inventory_items(
+    threshold: int = 10, session: AsyncSession = Depends(get_session)
+):
     cache_key = f"low_inventory_{threshold}"
     cached_value = await redis_cache.get(cache_key)
     if cached_value:
@@ -32,17 +37,32 @@ async def get_low_inventory_items(threshold: int = 10, session: AsyncSession = D
     result = await session.execute(select(Item).where(Item.stock < threshold))
     items = result.scalars().all()
     await redis_cache.set(cache_key, json.dumps([item.json() for item in items]))
-    return [LowInventoryItem.from_orm(item) for item in items]
+    return [LowInventoryItemResponse.from_orm(item) for item in items]
 
-@router.get("/category_stock", response_model=list[InventoryStatistics])
+
+@router.get("/category_stock", response_model=list[InventoryStatisticsResponse])
 async def get_category_stock(session: AsyncSession = Depends(get_session)):
     cached_value = await redis_cache.get("category_stock")
     if cached_value:
-        return [InventoryStatistics.parse_raw(item) for item in json.loads(cached_value)]
+        return [
+            InventoryStatisticsResponse.parse_raw(item)
+            for item in json.loads(cached_value)
+        ]
 
     result = await session.execute(
         select(Category.name, func.sum(Item.stock)).join(Item).group_by(Category.name)
     )
     category_stats = result.all()
-    await redis_cache.set("category_stock", json.dumps([InventoryStatistics(category_name=name, total_stock=stock).json() for name, stock in category_stats]))
-    return [InventoryStatistics(category_name=name, total_stock=stock) for name, stock in category_stats]
+    await redis_cache.set(
+        "category_stock",
+        json.dumps(
+            [
+                InventoryStatistics(category_name=name, total_stock=stock).json()
+                for name, stock in category_stats
+            ]
+        ),
+    )
+    return [
+        InventoryStatistics(category_name=name, total_stock=stock)
+        for name, stock in category_stats
+    ]

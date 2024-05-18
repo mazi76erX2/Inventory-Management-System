@@ -1,44 +1,26 @@
-import os
+""" Description: Main entry point for the FastAPI application. """
+
 import uvicorn
 from fastapi import FastAPI
-from dotenv import load_dotenv
+from fastapi.middleware.cors import CORSMiddleware
 
-from api import api_router
-from .config import configure_logging
+from backend.api import api_router
+from backend.config import configure_logging, DEBUG, ALLOWED_HOSTS
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-load_dotenv(os.path.join(BASE_DIR, ".env"))
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-engine = create_async_engine(DATABASE_URL, echo=True)
-async_session = sessionmaker(
-    bind=engine,
-    class_=AsyncSession,
-    expire_on_commit=False
-)
+configure_logging()
 
 app = FastAPI(
     title="Inventory Management API",
     description="An API for managing inventory items, categories, and suppliers.",
     version="0.1.0",
-    docs_url="/api/docs",
-    redoc_url="/api/redoc",
-    logging_level="warning",
-    debug=os.getenv("DEBUG", False)
+    debug=DEBUG,
     host="0.0.0.0",
     port=8080,
-    on_startup=lambda: print("Server started!"),
 )
-
-async def get_session() -> AsyncSession:
-    async with async_session() as session:
-        yield session
-
-configure_logging()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.getenv("CORS_ALLOW_ORIGINS", "*").split(","),
+    allow_origins=ALLOWED_HOSTS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
