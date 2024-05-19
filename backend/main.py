@@ -18,6 +18,7 @@ app = FastAPI(
     debug=DEBUG,
     host="0.0.0.0",
     port=8080,
+    url_prefix="/api",
 )
 
 app.add_middleware(

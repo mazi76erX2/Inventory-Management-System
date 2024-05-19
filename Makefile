@@ -86,7 +86,7 @@ docker-migrate:
 docker-test:
 	docker compose exec backend python -m pytest $(TEST_SRC)
 
-create-mock-data:
+docker-create-mock-data:
 	docker compose exec backend python management/create_mock_data.py
 
 ### Docker production commands ###
