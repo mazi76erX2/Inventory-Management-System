@@ -1,10 +1,18 @@
-import React, { createContext, useContext, ReactNode } from 'react';
+'use client';
+
+import React, { createContext, useContext } from 'react';
 import { useCategories } from '../../api/useCategories';
 import { useSuppliers } from '../../api/useSuppliers';
+import { Category, Supplier } from '../../types';
 
-const InventoryContext = createContext(null);
+interface InventoryContextProps {
+  categories: Category[];
+  suppliers: Supplier[];
+}
 
-export const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+const InventoryContext = createContext<InventoryContextProps | undefined>(undefined);
+
+export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { data: categories = [] } = useCategories();
   const { data: suppliers = [] } = useSuppliers();
 
@@ -15,4 +23,10 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children 
   );
 };
 
-export const useInventory = () => useContext(InventoryContext);
+export const useInventory = (): InventoryContextProps => {
+  const context = useContext(InventoryContext);
+  if (!context) {
+    throw new Error('useInventory must be used within an InventoryProvider');
+  }
+  return context;
+};

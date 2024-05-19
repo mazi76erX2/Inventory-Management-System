@@ -1,6 +1,10 @@
+'use client';
+
 import { useItems } from '../api/useItems';
 import { useCategories } from '../api/useCategories';
 import { useSuppliers } from '../api/useSuppliers';
+import { InventoryProvider } from './context/InventoryContext';
+import ItemList from './items/page';
 
 
 export default function Home() {
