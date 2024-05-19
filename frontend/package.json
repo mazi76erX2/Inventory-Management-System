@@ -1,5 +1,10 @@
 {
   "name": "inventory-managemnt-app",
+  "description": "Inventory Management App",
+  "author": {
+    "name": "Xolani Mazibuko",
+    "email": "mazi76erx@gmail.com"
+  },
   "version": "0.1.0",
   "private": true,
   "scripts": {
