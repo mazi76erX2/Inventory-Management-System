@@ -54,7 +54,7 @@ async def generate_mock_data(num_categories: int, num_suppliers: int, num_items:
 
 @router.post("/generate-mock-data/")
 async def generate_mock_data_endpoint(
-    num_categories: int=NUM_ITEMS, num_suppliers: int=NUM_CATEGORIES, num_items: int=NUM_SUPPLIERS, session: AsyncSession = Depends(get_session)
+    num_categories: int=NUM_CATEGORIES, num_suppliers: int=NUM_SUPPLIERS, num_items: int=NUM_ITEMS, session: AsyncSession = Depends(get_session)
 ):
     try:
         await generate_mock_data(num_categories, num_suppliers, num_items, session)
