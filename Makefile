@@ -61,9 +61,6 @@ makemigrations:
 migrate:
 	$(PYTHON) -m alembic $(APP_DIR) upgrade head
 
-create-mock-data:
-	$(PYTHON) management/create_mock_data.py
-
 test:
 	$(PYTHON) -m pytest $(TEST_SRC)
 
@@ -85,9 +82,6 @@ docker-migrate:
 
 docker-test:
 	docker compose exec backend python -m pytest $(TEST_SRC)
-
-docker-create-mock-data:
-	docker compose exec backend python management/create_mock_data.py
 
 ### Docker production commands ###
 prod-migrate:

@@ -20,7 +20,7 @@ async def create_item(item: ItemCreate, session: AsyncSession = Depends(get_sess
 
 @router.get("/", response_model=list[ItemResponse])
 async def read_items(
-    skip: int = 0, limit: int = 10, session: AsyncSession = Depends(get_session)
+    skip: int = 0, limit: int = 100, session: AsyncSession = Depends(get_session)
 ):
     result = await session.execute(select(Item).offset(skip).limit(limit))
     items = result.scalars().all()

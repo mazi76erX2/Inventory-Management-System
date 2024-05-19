@@ -41,3 +41,7 @@ DEBUG = str2bool(os.getenv("DEBUG", "false"))
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379")
+
+NUM_ITEMS = int(os.getenv("NUM_ITEMS", 50))
+NUM_CATEGORIES = int(os.getenv("NUM_CATEGORIES", 10))
+NUM_SUPPLIERS = int(os.getenv("NUM_SUPPLIERS", 10))

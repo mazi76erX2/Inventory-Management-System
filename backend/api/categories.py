@@ -24,7 +24,7 @@ async def create_category(
 
 @router.get("/", response_model=list[CategoryResponse])
 async def read_categories(
-    skip: int = 0, limit: int = 10, session: AsyncSession = Depends(get_session)
+    skip: int = 0, limit: int = 100, session: AsyncSession = Depends(get_session)
 ):
     result = await session.execute(select(Category).offset(skip).limit(limit))
     categories = result.scalars().all()

@@ -24,7 +24,7 @@ async def create_supplier(
 
 @router.get("/", response_model=list[SupplierResponse])
 async def read_suppliers(
-    skip: int = 0, limit: int = 10, session: AsyncSession = Depends(get_session)
+    skip: int = 0, limit: int = 100, session: AsyncSession = Depends(get_session)
 ):
     result = await session.execute(select(Supplier).offset(skip).limit(limit))
     suppliers = result.scalars().all()
