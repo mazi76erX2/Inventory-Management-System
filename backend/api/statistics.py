@@ -1,3 +1,8 @@
+""" This module contains the API routes for the statistics endpoints.
+    Please note that the cache functionality has been commented out in this snippet.
+    as it is not required for the task and would require additional setup.
+"""
+
 import json
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -15,9 +20,9 @@ router = APIRouter()
 
 @router.get("/total_stock_value", response_model=float)
 async def get_total_stock_value(session: AsyncSession = Depends(get_session)):
-    cached_value = await redis_cache.get("total_stock_value")
-    if cached_value:
-        return float(cached_value)
+    # cached_value = await redis_cache.get("total_stock_value")
+    # if cached_value:
+    #     return float(cached_value)
 
     result = await session.execute(select(func.sum(Item.stock)))
     total_stock_value = result.scalar()
@@ -29,10 +34,10 @@ async def get_total_stock_value(session: AsyncSession = Depends(get_session)):
 async def get_low_inventory_items(
     threshold: int = 10, session: AsyncSession = Depends(get_session)
 ):
-    cache_key = f"low_inventory_{threshold}"
-    cached_value = await redis_cache.get(cache_key)
-    if cached_value:
-        return [LowInventoryItem.parse_raw(item) for item in json.loads(cached_value)]
+    # cache_key = f"low_inventory_{threshold}"
+    # cached_value = await redis_cache.get(cache_key)
+    # if cached_value:
+    #     return [LowInventoryItem.parse_raw(item) for item in json.loads(cached_value)]
 
     result = await session.execute(select(Item).where(Item.stock < threshold))
     items = result.scalars().all()
@@ -42,26 +47,26 @@ async def get_low_inventory_items(
 
 @router.get("/category_stock", response_model=list[InventoryStatisticsResponse])
 async def get_category_stock(session: AsyncSession = Depends(get_session)):
-    cached_value = await redis_cache.get("category_stock")
-    if cached_value:
-        return [
-            InventoryStatisticsResponse.parse_raw(item)
-            for item in json.loads(cached_value)
-        ]
+    # cached_value = await redis_cache.get("category_stock")
+    # if cached_value:
+    #     return [
+    #         InventoryStatisticsResponse.parse_raw(item)
+    #         for item in json.loads(cached_value)
+    #     ]
 
     result = await session.execute(
         select(Category.name, func.sum(Item.stock)).join(Item).group_by(Category.name)
     )
     category_stats = result.all()
-    await redis_cache.set(
-        "category_stock",
-        json.dumps(
-            [
-                InventoryStatistics(category_name=name, total_stock=stock).json()
-                for name, stock in category_stats
-            ]
-        ),
-    )
+    # await redis_cache.set(
+    #     "category_stock",
+    #     json.dumps(
+    #         [
+    #             InventoryStatistics(category_name=name, total_stock=stock).json()
+    #             for name, stock in category_stats
+    #         ]
+    #     ),
+    # )
     return [
         InventoryStatistics(category_name=name, total_stock=stock)
         for name, stock in category_stats
