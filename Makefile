@@ -83,27 +83,8 @@ docker-migrate:
 docker-test:
 	docker compose exec backend python -m pytest $(TEST_SRC)
 
-### Docker production commands ###
-prod-migrate:
-	docker compose -f docker-compose.prod.yml exec backend python -m alembic $(APP_DIR) upgrade head
-
-prod-up:
-	docker compose -f docker-compose.prod.yml up -d --build
-
-prod-down:
-	docker compose -f docker-compose.prod.yml down -v
-
 copy-env:
 	exec cp .env.example .env
-
-push-image-aws:
-	docker build -t $(AWS_ACCOUNT_URI):latest .
-
-	aws ecr get-login-password --region $(AWS_REGION) | docker login \
-    --username AWS --password-stdin \
-    $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com
-
-	docker push $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com/django-app:latest
 
 .PHONY: help venv install-packages create-local-database-linux
 	create-local-database-mac drop-local-database run-local migrate test up down

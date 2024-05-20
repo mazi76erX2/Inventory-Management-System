@@ -14,6 +14,7 @@ redis = "5.0.4"
 asyncpg = "0.29.0"
 faker = "*"
 psycopg2-binary = "2.9.9"
+aioredis = "2.0.1"
 
 [dev-packages]
 mypy = "1.10.0"
