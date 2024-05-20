@@ -6,9 +6,8 @@ import { createMockData } from '../../api/createMockData';
 const Navbar = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    // createMockData();
+    createMockData();
     alert('Mock data created successfully');
-    // document.location.href = '/';
   };
 
   return (

@@ -30,3 +30,5 @@ export const useInventory = (): InventoryContextProps => {
   }
   return context;
 };
+
+// TODO: Update the ItemList component to use the InventoryContext

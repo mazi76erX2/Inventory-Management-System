@@ -3,8 +3,9 @@
 import { useItems } from '../api/useItems';
 import { useCategories } from '../api/useCategories';
 import { useSuppliers } from '../api/useSuppliers';
-import { InventoryProvider } from './context/InventoryContext';
-import ItemList from './items/page';
+// import { InventoryProvider } from './context/InventoryContext';
+// import ItemList from './items/page';
+// Future implementation of the ItemList component
 
 
 export default function Home() {
@@ -23,7 +24,7 @@ export default function Home() {
       <h2 className="text-xl font-bold mt-4">Items</h2>
       <ul>
         {items?.map(item => (
-          <li key={item.id}>{item.name} - Stock: {item.stock}</li>
+          <li key={item.id}>{item.name} - Stock: {item.stock} - Category: {item.category.name} - Supplier: {item.supplier.name}</li>
         ))}
       </ul>
 

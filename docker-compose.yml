@@ -57,13 +57,11 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend:/frontend
+      - ./frontend:/app
     depends_on:
       - backend
     environment:
       - NEXT_PUBLIC_BACKEND_URL=http://backend:8000
-    networks:
-      - backend
 
 volumes:
   db: {}

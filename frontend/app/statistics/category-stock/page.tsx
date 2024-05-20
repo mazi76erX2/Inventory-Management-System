@@ -1,8 +1,12 @@
+// TODO: Create a page that shows the total stock of each category
+
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 const fetchCategoryStock = async () => {
-  const { data } = await axios.get('/api/statistics/category_stock');
+  const { data } = await axios.get(`${API_URL}/api/statistics/category_stock`);
   return data;
 };
 

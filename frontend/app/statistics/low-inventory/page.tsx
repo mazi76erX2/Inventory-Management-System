@@ -1,8 +1,12 @@
+// TODO: Implement the Low Inventory page
+
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 const fetchLowInventoryItems = async () => {
-  const { data } = await axios.get('/api/statistics/low_inventory');
+  const { data } = await axios.get(`${API_URL}/api/statistics/low_inventory`);
   return data;
 };
 

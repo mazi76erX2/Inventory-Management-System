@@ -61,9 +61,6 @@ makemigrations:
 migrate:
 	$(PYTHON) -m alembic $(APP_DIR) upgrade head
 
-test:
-	$(PYTHON) -m pytest $(TEST_SRC)
-
 ### Docker commands ###
 up:
 	docker compose up -d --build
@@ -79,9 +76,6 @@ docker-makemigrations:
 
 docker-migrate:
 	docker compose exec backend python -m alembic $(APP_DIR) upgrade head
-
-docker-test:
-	docker compose exec backend python -m pytest $(TEST_SRC)
 
 copy-env:
 	exec cp .env.example .env
